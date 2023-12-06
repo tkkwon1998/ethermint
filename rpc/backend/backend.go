@@ -132,6 +132,14 @@ var _ BackendI = (*Backend)(nil)
 
 var bAttributeKeyEthereumBloom = []byte(evmtypes.AttributeKeyEthereumBloom)
 
+type ProcessBlocker func(
+	tendermintBlock *tmrpctypes.ResultBlock,
+	ethBlock *map[string]interface{},
+	rewardPercentiles []float64,
+	tendermintBlockResult *tmrpctypes.ResultBlockResults,
+	targetOneFeeHistory *rpctypes.OneFeeHistory,
+) error
+
 // Backend implements the BackendI interface
 type Backend struct {
 	ctx                 context.Context
@@ -142,6 +150,7 @@ type Backend struct {
 	cfg                 config.Config
 	allowUnprotectedTxs bool
 	indexer             ethermint.EVMTxIndexer
+	processBlocker      ProcessBlocker
 }
 
 // NewBackend creates a new Backend instance for cosmos and ethereum namespaces
@@ -178,7 +187,7 @@ func NewBackend(
 		clientCtx = clientCtx.WithKeyring(kr)
 	}
 
-	return &Backend{
+	b := &Backend{
 		ctx:                 context.Background(),
 		clientCtx:           clientCtx,
 		queryClient:         rpctypes.NewQueryClient(clientCtx),
@@ -188,4 +197,6 @@ func NewBackend(
 		allowUnprotectedTxs: allowUnprotectedTxs,
 		indexer:             indexer,
 	}
+	b.processBlocker = b.processBlock
+	return b
 }

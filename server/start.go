@@ -458,9 +458,10 @@ func startInProcess(ctx *server.Context, clientCtx client.Context, appCreator ty
 
 		clientCtx := clientCtx.WithChainID(genDoc.ChainID)
 
-		tmEndpoint := "/websocket"
-		tmRPCAddr := cfg.RPC.ListenAddress
-		httpSrv, httpSrvDone, err = StartJSONRPC(ctx, clientCtx, tmRPCAddr, tmEndpoint, &config, idxer)
+		// tmEndpoint := "/websocket"
+		// tmRPCAddr := cfg.RPC.ListenAddress
+		// httpSrv, httpSrvDone, err = StartJSONRPC(ctx, clientCtx, tmRPCAddr, tmEndpoint, &config, idxer)
+		httpSrv, httpSrvDone, err = StartJSONRPC(ctx, clientCtx, &config, idxer)
 		if err != nil {
 			return err
 		}
