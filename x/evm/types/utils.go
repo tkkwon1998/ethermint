@@ -5,9 +5,10 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
+	io "io"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	io "io"
 
 	"github.com/ethereum/go-ethereum/common"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
@@ -100,6 +101,8 @@ func DecodeTxLogsFromEvents(in []byte, blockNumber uint64) ([]*ethtypes.Log, err
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("DECODE TX RESPONSES-------------\n")
+	fmt.Println(txResponses)
 	var logs []*ethtypes.Log
 	for _, response := range txResponses {
 		logs = logsFromTxResponse(logs, response, blockNumber)
@@ -136,6 +139,8 @@ func DecodeTxResponses(in []byte) ([]*MsgEthereumTxResponse, error) {
 	if err := txMsgData.XXX_Unmarshal(in); err != nil {
 		return nil, err
 	}
+	fmt.Println("DECODE TX MSG DATA-------------\n")
+	fmt.Println(txMsgData)
 	responses := make([]*MsgEthereumTxResponse, 0, len(txMsgData.MsgResponses))
 	for _, res := range txMsgData.MsgResponses {
 		var response MsgEthereumTxResponse
@@ -152,8 +157,8 @@ func DecodeTxResponses(in []byte) ([]*MsgEthereumTxResponse, error) {
 }
 
 type TxMsgData struct {
-	Data []*MsgData `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
-	MsgResponses []*Any `protobuf:"bytes,2,rep,name=msg_responses,json=msgResponses,proto3" json:"msg_responses,omitempty"`
+	Data         []*MsgData `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
+	MsgResponses []*Any     `protobuf:"bytes,2,rep,name=msg_responses,json=msgResponses,proto3" json:"msg_responses,omitempty"`
 }
 
 type MsgData struct {
@@ -729,8 +734,8 @@ type anyCompat struct {
 var (
 	ErrInvalidLengthAbci        = fmt.Errorf("proto: negative length found during unmarshaling")
 	ErrIntOverflowAbci          = fmt.Errorf("proto: integer overflow")
-	ErrIntOverflowAny          = fmt.Errorf("proto: integer overflow")
+	ErrIntOverflowAny           = fmt.Errorf("proto: integer overflow")
 	ErrUnexpectedEndOfGroupAbci = fmt.Errorf("proto: unexpected end of group")
-	ErrInvalidLengthAny        = fmt.Errorf("proto: negative length found during unmarshaling")
-	ErrUnexpectedEndOfGroupAny = fmt.Errorf("proto: unexpected end of group")
+	ErrInvalidLengthAny         = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrUnexpectedEndOfGroupAny  = fmt.Errorf("proto: unexpected end of group")
 )
