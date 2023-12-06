@@ -188,6 +188,7 @@ func (s *RPCStream) start(
 				// ignore transaction as it's not from the evm module
 				continue
 			}
+			fmt.Println("PASS EVM CHECK-------------\n")
 
 			// get transaction result data
 			dataTx, ok := ev.Data.(tmtypes.EventDataTx)
@@ -195,11 +196,14 @@ func (s *RPCStream) start(
 				s.logger.Error("event data type mismatch", "type", fmt.Sprintf("%T", ev.Data))
 				continue
 			}
+			fmt.Println(dataTx.TxResult.Result.Data)
 			txLogs, err := evmtypes.DecodeTxLogsFromEvents(dataTx.TxResult.Result.Data, uint64(dataTx.TxResult.Height))
 			if err != nil {
 				s.logger.Error("fail to decode evm tx response", "error", err.Error())
 				continue
 			}
+			fmt.Println("PASS DECODE TX LOGS-------------\n")
+			fmt.Println(txLogs)
 
 			s.logStream.Add(txLogs...)
 		}
