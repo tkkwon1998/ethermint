@@ -5,16 +5,16 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/tendermint/tendermint/libs/log"
-	tmquery "github.com/tendermint/tendermint/libs/pubsub/query"
-	rpcclient "github.com/tendermint/tendermint/rpc/client"
-	coretypes "github.com/tendermint/tendermint/rpc/core/types"
-	tmtypes "github.com/tendermint/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/evmos/ethermint/rpc/types"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
+	"github.com/tendermint/tendermint/libs/log"
+	tmquery "github.com/tendermint/tendermint/libs/pubsub/query"
+	rpcclient "github.com/tendermint/tendermint/rpc/client"
+	coretypes "github.com/tendermint/tendermint/rpc/core/types"
+	tmtypes "github.com/tendermint/tendermint/types"
 )
 
 const (
@@ -134,6 +134,7 @@ func (s *RPCStream) start(
 	for {
 		select {
 		case ev, ok := <-chHeaders:
+			fmt.Println("GETTING HEADERS-------------\n")
 			if !ok {
 				chHeaders = nil
 				break
@@ -151,6 +152,7 @@ func (s *RPCStream) start(
 			header := types.EthHeaderFromTendermint(data.Header, ethtypes.Bloom{}, baseFee)
 			s.headerStream.Add(RPCHeader{EthHeader: header, Hash: common.BytesToHash(data.Header.Hash())})
 		case ev, ok := <-chTx:
+			fmt.Println("GETTING TXs-------------\n")
 			if !ok {
 				chTx = nil
 				break
@@ -176,6 +178,7 @@ func (s *RPCStream) start(
 			}
 			s.txStream.Add(hashes...)
 		case ev, ok := <-chLogs:
+			fmt.Println("GETTING LOGS-------------\n")
 			if !ok {
 				chLogs = nil
 				break
